@@ -114,3 +114,5 @@ cara menjalankannya npx expo start --clear
 base urlnya frontend http://localhost:8081/
 
 base url backend http://localhost:8080/api
+
+ini url apk mobilenya yang belum saya sertakan update terbarunya https://expo.dev/accounts/mffathir/projects/taskmanagementapp/builds/17787899-83af-41cf-afd7-2c8df7c40eb5
