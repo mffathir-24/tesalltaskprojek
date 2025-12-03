@@ -1,4 +1,4 @@
-// components/WebOptimizedView.js
+
 import React from 'react';
 import { KeyboardAvoidingView, ScrollView, View } from 'react-native';
 import { usePlatform } from '../hooks/usePlatform';

@@ -24,12 +24,12 @@ const AdminDashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Responsive breakpoints
+  
   const isMobile = width < 768;
   const isTablet = width >= 768 && width < 1024;
   const isDesktop = width >= 1024;
 
-  // Responsive values
+  
   const paddingHorizontal = isMobile ? 16 : isTablet ? 24 : 32;
   const actualChartWidth = isMobile 
     ? width - (paddingHorizontal * 2) - 32
@@ -296,7 +296,7 @@ const AdminDashboardScreen = ({ navigation }) => {
   };
   const totalUsers = stats?.total_users || 0;
 
-  // Debug logs
+  
   console.log('🔍 Stats:', stats);
   console.log('🔍 Task Stats:', taskStats);
   console.log('🔍 Project Stats:', projectStats);

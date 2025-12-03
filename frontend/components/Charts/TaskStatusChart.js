@@ -42,7 +42,7 @@ const TaskStatusChart = ({ data, width = 300, height = 300 }) => {
     'overdue': 'Overdue'
   };
 
-  // Calculate percentages and angles for pie chart
+  
   let cumulativeAngle = 0;
   const segments = Object.entries(chartData).map(([status, value]) => {
     const percentage = (value / totalTasks) * 100;
@@ -62,7 +62,7 @@ const TaskStatusChart = ({ data, width = 300, height = 300 }) => {
     return segment;
   });
 
-  // For mobile, use a simpler visualization
+  
   if (Platform.OS !== 'web') {
     return (
       <View className="bg-white rounded-3xl p-6 shadow-xl">
@@ -120,7 +120,7 @@ const TaskStatusChart = ({ data, width = 300, height = 300 }) => {
     );
   }
 
-  // For web, use SVG pie chart
+  
   return (
     <View className="bg-white rounded-3xl p-6 shadow-xl">
       <Text className="text-2xl font-bold text-gray-800 mb-6">Task Status Distribution</Text>

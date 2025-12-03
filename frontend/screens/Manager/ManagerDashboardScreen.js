@@ -25,12 +25,12 @@ const ManagerDashboardScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
 
-  // Responsive breakpoints
+  
   const isMobile = width < 768;
   const isTablet = width >= 768 && width < 1024;
   const isDesktop = width >= 1024;
 
-  // Responsive values
+  
   const paddingHorizontal = isMobile ? 16 : isTablet ? 24 : 32;
   const actualChartWidth = isMobile 
     ? width - (paddingHorizontal * 2) - 32

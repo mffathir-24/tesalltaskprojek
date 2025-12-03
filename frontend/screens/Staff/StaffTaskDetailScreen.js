@@ -1,4 +1,4 @@
-// screens/Staff/StaffTaskDetailScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import * as DocumentPicker from 'expo-document-picker';
@@ -30,7 +30,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
   const { user: currentUser } = useAuth();
   const { width, height } = useWindowDimensions();
   
-  // State Management
+  
   const [task, setTask] = useState(null);
   const [comments, setComments] = useState([]);
   const [attachments, setAttachments] = useState([]);
@@ -49,15 +49,17 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [deletingAttachment, setDeletingAttachment] = useState(null);
+  const [showAttachmentDeleteModal, setShowAttachmentDeleteModal] = useState(false);
+  const [attachmentToDelete, setAttachmentToDelete] = useState(null);
   
-  // Responsive Design
+  
   const isMobile = width < 768;
   const isTablet = width >= 768 && width < 1024;
   const isDesktop = width >= 1024;
   const paddingHorizontal = isMobile ? 16 : isTablet ? 24 : 32;
   const contentContainerPaddingBottom = isMobile ? 32 : 64;
 
-  // ==================== API Calls ====================
+  
   const fetchTaskData = useCallback(async () => {
     try {
       setLoading(true);
@@ -97,7 +99,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
     fetchTaskData();
   }, [fetchTaskData]);
 
-  // ==================== Task Status Functions ====================
+  
   const handleUpdateStatus = async (newStatus) => {
     try {
       setSubmitting(true);
@@ -153,7 +155,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
     { value: 'done', label: 'Done', color: '#10b981', icon: 'checkmark-done-outline' },
   ];
 
-  // ==================== Comment Functions ====================
+  
   const isCommentOwner = (comment) => {
     console.log('🔍 Checking comment ownership:', {
       commentUserId: comment.user_id,
@@ -268,21 +270,21 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  // ==================== Attachment Functions ====================
+  
   const handleUploadFile = async () => {
     try {
       console.log('🔄 Starting file upload process...');
 
       let file;
       
-      // PERBAIKAN: Handle web vs mobile file picker
+      
       if (Platform.OS === 'web') {
-        // Untuk web, buat input file
+        
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '*/*';
         
-        // Tunggu user memilih file
+        
         const filePromise = new Promise((resolve, reject) => {
           input.onchange = (e) => {
             const selectedFile = e.target.files[0];
@@ -291,7 +293,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
               return;
             }
             
-            // Validasi ukuran file
+            
             const maxSize = 10 * 1024 * 1024;
             if (selectedFile.size > maxSize) {
               Alert.alert('File Too Large', 'Please select a file smaller than 10MB');
@@ -299,7 +301,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
               return;
             }
             
-            // Konversi ke format yang sesuai
+            
             file = {
               name: selectedFile.name,
               size: selectedFile.size,
@@ -317,7 +319,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
         input.click();
         await filePromise;
       } else {
-        // Untuk mobile, gunakan DocumentPicker
+        
         const result = await DocumentPicker.getDocumentAsync({
           type: '*/*',
           copyToCacheDirectory: true,
@@ -348,10 +350,10 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
       const formData = new FormData();
       
       if (Platform.OS === 'web') {
-        // Untuk web, langsung append file
+        
         formData.append('file', file.uri);
       } else {
-        // Untuk mobile, format khusus
+        
         formData.append('file', {
           uri: Platform.OS === 'ios' ? file.uri.replace('file://', '') : file.uri,
           type: file.mimeType || 'application/octet-stream',
@@ -403,102 +405,99 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
   };
 
   const handleDeleteAttachment = (attachment) => {
-    const isOwner = attachment.uploader?.id === currentUser?.id;
-    const isAdmin = currentUser?.role === 'admin';
-    const isManager = currentUser?.role === 'manager';
-    
-    if (!isOwner && !isAdmin && !isManager) {
+  const isOwner = attachment.uploader?.id === currentUser?.id;
+  const isAdmin = currentUser?.role === 'admin';
+  const isManager = currentUser?.role === 'manager';
+  
+  if (!isOwner && !isAdmin && !isManager) {
+    if (Platform.OS === 'web') {
+      window.alert('Permission Denied\n\nYou can only delete files that you uploaded.');
+    } else {
       Alert.alert(
         'Permission Denied', 
         'You can only delete files that you uploaded.'
       );
-      return;
     }
+    return;
+  }
 
-    // PERBAIKAN: Gunakan modal khusus untuk web
+  if (Platform.OS === 'web') {
+    // Untuk web, gunakan modal custom yang sama dengan comments
+    setAttachmentToDelete(attachment);
+    setShowAttachmentDeleteModal(true);
+  } else {
+    // Mobile: Tetap menggunakan Alert.alert
+    Alert.alert(
+      'Delete File',
+      `Are you sure you want to delete "${attachment.file_name}"?\n\nThis action cannot be undone.`,
+      [
+        { 
+          text: 'Cancel', 
+          style: 'cancel' 
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => performDeleteAttachment(attachment)
+        },
+      ]
+    );
+  }
+};
+
+const performDeleteAttachment = async (attachment) => {
+  try {
+    setDeletingAttachment(attachment.id);
+    console.log('🗑️ Deleting attachment:', {
+      id: attachment.id,
+      taskId: taskId,
+      fileName: attachment.file_name
+    });
+    
+    await attachmentService.deleteAttachment(taskId, attachment.id);
+    
+    console.log('✅ Attachment deleted successfully');
+    await fetchTaskData();
+    
+    // PERBAIKAN: Menggunakan notifikasi yang sesuai untuk web
     if (Platform.OS === 'web') {
-      setSelectedAttachment(attachment);
-      // Tampilkan modal delete untuk web
-      Alert.alert(
-        'Delete File',
-        `Are you sure you want to delete "${attachment.file_name}"?\n\nThis action cannot be undone.`,
-        [
-          { 
-            text: 'Cancel', 
-            style: 'cancel',
-            onPress: () => setSelectedAttachment(null)
-          },
-          {
-            text: 'Delete',
-            style: 'destructive',
-            onPress: () => performDeleteAttachment(attachment)
-          },
-        ]
-      );
+      // Anda bisa menggunakan alert sederhana atau modal yang lebih bagus
+      window.alert('File deleted successfully');
     } else {
-      Alert.alert(
-        'Delete File',
-        `Are you sure you want to delete "${attachment.file_name}"?\n\nThis action cannot be undone.`,
-        [
-          { 
-            text: 'Cancel', 
-            style: 'cancel' 
-          },
-          {
-            text: 'Delete',
-            style: 'destructive',
-            onPress: () => performDeleteAttachment(attachment)
-          },
-        ]
-      );
+      Alert.alert('Success', 'File deleted successfully');
     }
-  };
-
-  const performDeleteAttachment = async (attachment) => {
-    try {
-      setDeletingAttachment(attachment.id);
-      console.log('🗑️ Deleting attachment:', {
-        id: attachment.id,
-        taskId: taskId,
-        fileName: attachment.file_name
-      });
-      
-      await attachmentService.deleteAttachment(taskId, attachment.id);
-      
-      console.log('✅ Attachment deleted successfully');
-      await fetchTaskData();
-      
-      // PERBAIKAN: Feedback yang berbeda untuk web
-      if (Platform.OS === 'web') {
-        // Untuk web, bisa menggunakan toast atau alert biasa
-        alert('File deleted successfully');
-      } else {
-        Alert.alert('Success', 'File deleted successfully');
-      }
-    } catch (error) {
-      console.error('❌ Error deleting attachment:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
-      
-      if (error.response?.status === 404) {
-        Alert.alert('Error', 'File not found');
-      } else if (error.response?.status === 403) {
-        Alert.alert('Permission Denied', 'You do not have permission to delete this file');
-      } else if (error.response?.data?.error) {
-        Alert.alert('Error', error.response.data.error);
-      } else {
-        Alert.alert('Error', error.message || 'Failed to delete file');
-      }
-    } finally {
-      setDeletingAttachment(null);
-      setSelectedAttachment(null);
+  } catch (error) {
+    console.error('❌ Error deleting attachment:', error);
+    console.error('Error details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    
+    // PERBAIKAN: Error handling untuk web
+    let errorMessage = 'Failed to delete file';
+    if (error.response?.status === 404) {
+      errorMessage = 'File not found';
+    } else if (error.response?.status === 403) {
+      errorMessage = 'You do not have permission to delete this file';
+    } else if (error.response?.data?.error) {
+      errorMessage = error.response.data.error;
+    } else if (error.message) {
+      errorMessage = error.message;
     }
-  };
+    
+    if (Platform.OS === 'web') {
+      window.alert(`Error: ${errorMessage}`);
+    } else {
+      Alert.alert('Error', errorMessage);
+    }
+  } finally {
+    setDeletingAttachment(null);
+    setSelectedAttachment(null);
+  }
+};
 
-  // ==================== Style & Formatting Functions ====================
+  
   const formatDate = (dateString) => {
     if (!dateString || dateString === '0001-01-01T00:00:00Z') {
       return 'Not set';
@@ -546,7 +545,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  // ==================== Render Functions ====================
+  
   const renderCommentItem = ({ item, index }) => {
     const isOwner = isCommentOwner(item);
     
@@ -687,7 +686,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
         style={{
           marginHorizontal: paddingHorizontal,
           marginBottom: 12,
-          cursor: Platform.OS === 'web' ? 'pointer' : 'default' // PERBAIKAN: Tambah cursor untuk web
+          cursor: Platform.OS === 'web' ? 'pointer' : 'default' 
         }}
       >
         <View style={{
@@ -703,7 +702,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
           borderColor: '#f1f5f9',
           borderLeftWidth: isOwner ? 4 : 0,
           borderLeftColor: isOwner ? '#10b981' : 'transparent',
-          // PERBAIKAN: Hover effect untuk web
+          
           ...(Platform.OS === 'web' && {
             ':hover': {
               shadowColor: '#000',
@@ -719,7 +718,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
             flexDirection: 'row', 
             alignItems: 'center', 
             padding: 16,
-            // PERBAIKAN: Pointer events untuk web
+            
             pointerEvents: isDeleting ? 'none' : 'auto'
           }}>
             <TouchableOpacity
@@ -727,7 +726,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
               onPress={() => handleOpenPreview(item)}
               activeOpacity={0.7}
               disabled={isDeleting}
-              // PERBAIKAN: Tambah style untuk web
+              
               {...(Platform.OS === 'web' && {
                 onMouseEnter: (e) => {
                   e.currentTarget.style.opacity = '0.8';
@@ -746,7 +745,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginRight: 14,
-                  flexShrink: 0 // PERBAIKAN: Agar tidak shrink di web
+                  flexShrink: 0 
                 }}
               >
                 <Ionicons 
@@ -798,7 +797,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
             <View style={{ 
               flexDirection: 'row', 
               gap: 8,
-              flexShrink: 0 // PERBAIKAN: Agar tidak shrink di web
+              flexShrink: 0 
             }}>
               <TouchableOpacity
                 style={{
@@ -812,7 +811,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
                 onPress={() => handleOpenPreview(item)}
                 disabled={isDeleting}
                 activeOpacity={0.7}
-                // PERBAIKAN: Tooltip untuk web
+                
                 {...(Platform.OS === 'web' && {
                   title: 'Preview file',
                   onMouseEnter: (e) => {
@@ -839,7 +838,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
                   onPress={() => handleDeleteAttachment(item)}
                   disabled={isDeleting}
                   activeOpacity={0.7}
-                  // PERBAIKAN: Tooltip untuk web
+                  
                   {...(Platform.OS === 'web' && {
                     title: 'Delete file',
                     onMouseEnter: (e) => {
@@ -868,7 +867,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
     );
   };
 
-  // ==================== Tab Content Renderers ====================
+  
   const renderDetailsTab = () => (
     <ScrollView 
       showsVerticalScrollIndicator={false}
@@ -1296,7 +1295,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
     </View>
   );
 
-  // ==================== Upload File Section untuk Web ====================
+  
   const renderUploadSection = () => (
     <Animated.View 
       entering={FadeInUp.delay(100)}
@@ -1314,7 +1313,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
         elevation: 5,
         borderWidth: 1,
         borderColor: '#f1f5f9',
-        // PERBAIKAN: Hover effect untuk web
+        
         ...(Platform.OS === 'web' && {
           ':hover': {
             shadowColor: '#000',
@@ -1338,7 +1337,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
           paddingVertical: 14,
           borderRadius: 12,
           backgroundColor: uploadingFile ? '#cbd5e1' : '#10b981',
-          // PERBAIKAN: Hover effect untuk web
+          
           ...(Platform.OS === 'web' && !uploadingFile && {
             ':hover': {
               backgroundColor: '#0ea271',
@@ -1350,7 +1349,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
         onPress={handleUploadFile}
         disabled={uploadingFile}
         activeOpacity={0.7}
-        // PERBAIKAN: Tambah pointer cursor untuk web
+        
         {...(Platform.OS === 'web' && {
           cursor: uploadingFile ? 'not-allowed' : 'pointer'
         })}
@@ -1402,7 +1401,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
         keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
         contentContainerStyle={{ 
           paddingBottom: contentContainerPaddingBottom,
-          // PERBAIKAN: Tambah web-specific styles
+          
           ...(Platform.OS === 'web' && {
             minHeight: '50vh',
             overflowY: 'auto'
@@ -1464,7 +1463,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
     </View>
   );
 
-  // ==================== Loading State ====================
+  
   if (loading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc' }}>
@@ -1503,7 +1502,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
     );
   }
 
-  // ==================== Error State ====================
+  
   if (!task) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc', justifyContent: 'center', alignItems: 'center', paddingHorizontal: paddingHorizontal }}>
@@ -1545,7 +1544,7 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
     );
   }
 
-  // ==================== Main Render ====================
+  
   const ScrollComponent = Platform.OS === 'web' ? ScrollView : SafeAreaView;
   const scrollProps = Platform.OS === 'web' ? {
     scrollEnabled: true,
@@ -2027,6 +2026,127 @@ const StaffTaskDetailScreen = ({ route, navigation }) => {
                       <Text style={{ fontSize: 14, fontWeight: '600', color: '#fff' }}>
                         Delete
                       </Text>
+                    </TouchableOpacity>
+                  </View>
+                </Animated.View>
+              </BlurView>
+            </Modal>
+          )}
+          {Platform.OS === 'web' && showAttachmentDeleteModal && (
+            <Modal
+              visible={showAttachmentDeleteModal}
+              transparent={true}
+              animationType="fade"
+              onRequestClose={() => {
+                setShowAttachmentDeleteModal(false);
+                setAttachmentToDelete(null);
+              }}
+            >
+              <BlurView
+                intensity={90}
+                tint="light"
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                }}
+              >
+                <Animated.View 
+                  entering={FadeInUp.delay(50)}
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 20,
+                    padding: 24,
+                    width: '90%',
+                    maxWidth: 400,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 20,
+                    elevation: 10,
+                    borderWidth: 1,
+                    borderColor: '#f1f5f9',
+                  }}
+                >
+                  <View style={{ alignItems: 'center', marginBottom: 24 }}>
+                    <LinearGradient
+                      colors={['#ef4444', '#dc2626']}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: 16,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginBottom: 16,
+                      }}
+                    >
+                      <Ionicons name="warning" size={28} color="#fff" />
+                    </LinearGradient>
+                    
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#0f172a', marginBottom: 8 }}>
+                      Delete File
+                    </Text>
+                    <Text style={{ fontSize: 14, color: '#64748b', textAlign: 'center', lineHeight: 20 }}>
+                      Are you sure you want to delete "{attachmentToDelete?.file_name}"?
+                    </Text>
+                    <Text style={{ fontSize: 13, color: '#94a3b8', textAlign: 'center', marginTop: 8, fontStyle: 'italic' }}>
+                      This action cannot be undone.
+                    </Text>
+                  </View>
+
+                  <View style={{ flexDirection: 'row', gap: 12 }}>
+                    <TouchableOpacity
+                      style={{
+                        flex: 1,
+                        paddingVertical: 14,
+                        backgroundColor: '#f1f5f9',
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        borderColor: '#e2e8f0',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      onPress={() => {
+                        setShowAttachmentDeleteModal(false);
+                        setAttachmentToDelete(null);
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: '#475569' }}>
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity
+                      style={{
+                        flex: 1,
+                        paddingVertical: 14,
+                        backgroundColor: '#ef4444',
+                        borderRadius: 12,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      onPress={() => {
+                        if (attachmentToDelete) {
+                          performDeleteAttachment(attachmentToDelete);
+                          setShowAttachmentDeleteModal(false);
+                        }
+                      }}
+                      disabled={deletingAttachment}
+                      activeOpacity={0.7}
+                    >
+                      {deletingAttachment ? (
+                        <ActivityIndicator size="small" color="#fff" />
+                      ) : (
+                        <>
+                          <Ionicons name="trash-outline" size={18} color="#fff" style={{ marginRight: 8 }} />
+                          <Text style={{ fontSize: 14, fontWeight: '600', color: '#fff' }}>
+                            Delete
+                          </Text>
+                        </>
+                      )}
                     </TouchableOpacity>
                   </View>
                 </Animated.View>

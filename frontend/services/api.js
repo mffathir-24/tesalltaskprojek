@@ -1,4 +1,4 @@
-// services/api.js
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -9,10 +9,10 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000, // Increased timeout for file uploads
+  timeout: 30000, 
 });
 
-// Request interceptor
+
 api.interceptors.request.use(
   async (config) => {
     try {
@@ -21,7 +21,7 @@ api.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
       
-      // Log request untuk debugging
+      
       console.log('🔵 API Request:', {
         method: config.method,
         url: config.url,
@@ -38,7 +38,7 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+
 api.interceptors.response.use(
   (response) => {
     console.log('✅ API Response:', {
@@ -58,7 +58,7 @@ api.interceptors.response.use(
       data: error.response?.data
     });
     
-    // Handle logout dengan expired token
+    
     if (error.response?.status === 401 && originalRequest.url?.includes('/auth/logout')) {
       console.log('Logout with expired token - this is expected');
       return Promise.resolve({ 
@@ -68,7 +68,7 @@ api.interceptors.response.use(
       });
     }
     
-    // Handle 401 untuk request lainnya
+    
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
@@ -83,7 +83,7 @@ api.interceptors.response.use(
   }
 );
 
-// Auth Services
+
 export const authService = {
   login: async (identifier, password) => {
     const response = await api.post('/auth/login', {
@@ -126,7 +126,7 @@ export const authService = {
   }
 };
 
-// User Services (Admin)
+
 export const userService = {
   getAllUsers: async () => {
     const response = await api.get('/users');
@@ -149,7 +149,7 @@ export const userService = {
   },
 };
 
-// Project Services
+
 export const projectService = {
   getAllProjects: async () => {
     const response = await api.get('/project');
@@ -194,7 +194,7 @@ export const projectService = {
   },
 };
 
-// Task Services
+
 export const taskService = {
   getProjectTasks: async (projectId) => {
     const response = await api.get(`/projects/${projectId}/tasks`);
@@ -227,7 +227,7 @@ export const taskService = {
   },
 };
 
-// Comments Services
+
 export const commentService = {
   getTaskComments: async (taskId) => {
     const response = await api.get(`/tasks/${taskId}/comments`);
@@ -250,7 +250,7 @@ export const commentService = {
   },
 };
 
-// PERBAIKAN: Attachment Services dengan handling yang lebih baik
+
 export const attachmentService = {
   getTaskAttachments: async (taskId) => {
     try {
@@ -262,7 +262,7 @@ export const attachmentService = {
     }
   },
   
-  // PERBAIKAN: Upload dengan proper multipart/form-data handling
+  
   uploadAttachment: async (taskId, formData) => {
     try {
       console.log('📤 Uploading attachment to task:', taskId);
@@ -275,8 +275,8 @@ export const attachmentService = {
             'Content-Type': 'multipart/form-data',
             'Accept': 'application/json',
           },
-          timeout: 60000, // 60 seconds for large files
-          transformRequest: (data) => data, // Important: don't transform FormData
+          timeout: 60000, 
+          transformRequest: (data) => data, 
         }
       );
       
@@ -293,7 +293,7 @@ export const attachmentService = {
     }
   },
   
-  // PERBAIKAN: Delete attachment dengan parameter yang benar
+  
   deleteAttachment: async (taskId, attachmentId) => {
     try {
       console.log('🗑️ Deleting attachment:', {
@@ -301,7 +301,7 @@ export const attachmentService = {
         attachmentId
       });
       
-      // Sesuaikan dengan route backend: DELETE /attachments/:attachment_id
+      
       const response = await api.delete(`/attachments/${attachmentId}`);
       
       console.log('✅ Delete successful:', response.data);

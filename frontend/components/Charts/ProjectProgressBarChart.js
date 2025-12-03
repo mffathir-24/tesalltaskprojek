@@ -27,17 +27,17 @@ const ProjectProgressBarChart = ({ projects, width, height, onProjectPress }) =>
     );
   }
 
-  // Sort projects by progress
+  
   const sortedProjects = [...projects].sort((a, b) => b.progress - a.progress);
   const displayProjects = sortedProjects.slice(0, 5);
 
-  // Warna gradient untuk bar chart
+  
   const getBarColor = (progress) => {
-    if (progress >= 90) return '#10B981'; // Green
-    if (progress >= 70) return '#3B82F6'; // Blue
-    if (progress >= 50) return '#8B5CF6'; // Purple
-    if (progress >= 30) return '#F59E0B'; // Amber
-    return '#EF4444'; // Red
+    if (progress >= 90) return '#10B981'; 
+    if (progress >= 70) return '#3B82F6'; 
+    if (progress >= 50) return '#8B5CF6'; 
+    if (progress >= 30) return '#F59E0B'; 
+    return '#EF4444'; 
   };
 
   const chartData = {

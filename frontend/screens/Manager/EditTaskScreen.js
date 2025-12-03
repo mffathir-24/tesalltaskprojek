@@ -180,7 +180,7 @@ export const EditTaskScreen = ({ route, navigation }) => {
             <Text style={styles.label}>Due Date</Text>
             
             {Platform.OS === 'web' ? (
-              // Input date native untuk web
+              
               <View style={styles.webDateContainer}>
                 <View style={styles.inputContainer}>
                   <Ionicons name="calendar-outline" size={20} color="#4facfe" style={styles.inputIcon} />
@@ -212,7 +212,7 @@ export const EditTaskScreen = ({ route, navigation }) => {
                 )}
               </View>
             ) : (
-              // DateTimePicker untuk mobile
+              
               <>
                 <TouchableOpacity
                   style={styles.selectButton}

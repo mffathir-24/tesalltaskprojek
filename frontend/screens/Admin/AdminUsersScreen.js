@@ -1,4 +1,4 @@
-// screens/Admin/AdminUsersScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useCallback, useEffect, useState } from 'react';
@@ -29,7 +29,7 @@ const AdminUsersScreen = ({ navigation }) => {
   const [slideAnim] = useState(new Animated.Value(50));
   const [scaleAnim] = useState(new Animated.Value(0.9));
   
-  // State untuk delete user modal
+  
   const [showDeleteUserModal, setShowDeleteUserModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [deletingUser, setDeletingUser] = useState(false);
@@ -126,14 +126,14 @@ const AdminUsersScreen = ({ navigation }) => {
     fetchUsers();
   }, []);
 
-  // Fungsi handleDeleteUser yang sudah dimodifikasi
+  
   const handleDeleteUser = (userId, username) => {
-    // Untuk web, gunakan custom modal
+    
     if (Platform.OS === 'web') {
       setUserToDelete({ id: userId, username: username });
       setShowDeleteUserModal(true);
     } else {
-      // Untuk mobile, gunakan Alert native
+      
       Alert.alert(
         'Delete User',
         `Are you sure you want to delete ${username}? This action cannot be undone.`,
@@ -151,21 +151,21 @@ const AdminUsersScreen = ({ navigation }) => {
     }
   };
 
-  // Fungsi untuk menghapus user
+  
   const performDeleteUser = async (userId, username) => {
     try {
       setDeletingUser(true);
       await userService.deleteUser(userId);
       
-      // Tampilkan feedback sukses
+      
       if (Platform.OS === 'web') {
-        // Untuk web, bisa gunakan toast atau alert sederhana
+        
         alert(`User "${username}" deleted successfully`);
       } else {
         Alert.alert('Success', 'User deleted successfully');
       }
       
-      // Refresh data
+      
       fetchUsers();
       
     } catch (error) {

@@ -1,4 +1,4 @@
-// components/FilePreviewModal.js
+
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -16,12 +16,12 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { useAuth } from '../context/AuthContext'; // Tambahkan ini
+import { useAuth } from '../context/AuthContext';
 
 const { width, height } = Dimensions.get('window');
 
 const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
-  const { authToken } = useAuth(); // Ambil token dari context
+  const { authToken } = useAuth(); 
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState(null);
@@ -38,24 +38,24 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
       setDownloading(false);
     }
     return () => {
-      // Cleanup local file
+      
       if (localFileUri && Platform.OS !== 'web') {
         FileSystem.deleteAsync(localFileUri, { idempotent: true }).catch(() => {});
       }
     };
   }, [visible, attachment]);
 
-  // Fungsi untuk mendapatkan token
+  
   const getToken = async () => {
     try {
       if (Platform.OS === 'web') {
-        // Untuk web, gunakan token dari context atau localStorage
+        
         const storedToken = authToken || localStorage.getItem('authToken');
         if (storedToken) {
           setToken(storedToken);
         }
       } else {
-        // Untuk mobile, gunakan AsyncStorage
+        
         const storedToken = await AsyncStorage.getItem('authToken');
         if (storedToken) {
           setToken(storedToken);
@@ -66,29 +66,29 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
     }
   };
 
-  // Fungsi untuk membuat URL download dengan token
+  
   const getDownloadUrl = () => {
     const baseUrl = apiBaseUrl || 'http://localhost:8080/api';
     if (token) {
-      // Method 1: Token di header (akan digunakan di downloadFile)
+      
       return `${baseUrl}/attachments/${attachment.id}/download`;
     } else {
-      // Method 2: Token di query parameter (untuk web preview)
+      
       return `${baseUrl}/attachments/${attachment.id}/download`;
     }
   };
 
-  // Fungsi untuk membuat URL preview (khusus web dengan token)
+  
   const getWebPreviewUrl = () => {
     const baseUrl = apiBaseUrl || 'http://localhost:8080/api';
     if (Platform.OS === 'web' && token) {
-      // Untuk web, buat URL dengan token di query parameter
+      
       return `${baseUrl}/attachments/${attachment.id}/download?token=${encodeURIComponent(token)}`;
     }
     return getDownloadUrl();
   };
 
-  // Fungsi untuk mendapatkan directory yang aman
+  
   const getSafeDirectory = () => {
     if (Platform.OS === 'web') {
       return '';
@@ -96,13 +96,13 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
     return FileSystem.documentDirectory || FileSystem.cacheDirectory || 'file:///';
   };
 
-  // Fungsi untuk membuat nama file yang aman
+  
   const getSafeFileName = (fileName) => {
     if (!fileName) return 'download_file';
     return fileName.replace(/[^a-z0-9.\-_]/gi, '_');
   };
 
-  // Fungsi untuk mendapatkan URI file yang aman
+  
   const getSafeFileUri = (fileName) => {
     if (Platform.OS === 'web') {
       return fileName;
@@ -117,7 +117,7 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
     const fileName = attachment?.file_name || '';
     const ext = fileName.split('.').pop()?.toLowerCase();
 
-    // Format yang bisa di-preview langsung di browser
+    
     const directPreviewTypes = [
       'application/pdf',
       'text/plain',
@@ -128,7 +128,7 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
       'audio/'
     ];
 
-    // Format Office documents
+    
     const officeTypes = [
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -148,7 +148,7 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
     }
   };
 
-  // Fungsi download file yang mendukung web dan mobile
+  
   const downloadFile = async () => {
     try {
       if (!token) {
@@ -165,7 +165,7 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
       });
 
       if (Platform.OS === 'web') {
-        // Untuk web, gunakan fetch dan createObjectURL
+        
         const response = await fetch(downloadUrl, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -179,20 +179,20 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         
-        // Buat link download
+        
         const a = document.createElement('a');
         a.href = url;
         a.download = attachment.file_name || 'download';
         document.body.appendChild(a);
         a.click();
         
-        // Cleanup
+        
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
 
         return url;
       } else {
-        // Untuk mobile
+        
         const fileUri = getSafeFileUri(attachment.file_name);
 
         const downloadResult = await FileSystem.downloadAsync(
@@ -229,16 +229,16 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
       }
 
       if (previewType === 'direct' && Platform.OS === 'web') {
-        // Untuk web preview langsung
+        
         const previewUrl = getWebPreviewUrl();
         
         console.log('Opening web preview:', previewUrl);
         
-        // Buka di tab baru dengan token
+        
         window.open(previewUrl, '_blank');
         
       } else if (previewType === 'direct') {
-        // Untuk mobile direct preview
+        
         const previewUrl = getWebPreviewUrl();
         
         console.log('Opening mobile preview:', previewUrl);
@@ -252,7 +252,7 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
           showTitle: true,
         });
       } else if (previewType === 'office') {
-        // Untuk Office documents
+        
         await downloadAndOpenOfficeFile();
       }
       
@@ -274,13 +274,13 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
 
   const downloadAndOpenOfficeFile = async () => {
     try {
-      // Download file
+      
       const fileUri = await downloadFile();
       
       console.log('File ready to open:', fileUri);
 
       if (Platform.OS === 'web') {
-        // Untuk web, buka di tab baru
+        
         window.open(fileUri, '_blank');
       } else {
         await openFileWithSharing(fileUri);
@@ -318,10 +318,10 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
         return;
       }
 
-      // Download file
+      
       await downloadFile();
 
-      // Show success message
+      
       if (Platform.OS === 'web') {
         Alert.alert('Download Complete', 'File downloaded successfully!');
       } else {
@@ -448,7 +448,7 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
     }
   };
 
-  // Render untuk web (lebih sederhana)
+  
   const renderWebPreview = () => (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -586,7 +586,7 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
     </View>
   );
 
-  // Render untuk mobile (dengan NativeWind classes)
+  
   const renderMobilePreview = () => (
     <View className="flex-1 bg-gradient-to-b from-gray-50 to-blue-50">
       {/* Header */}
@@ -782,7 +782,7 @@ const FilePreviewModal = ({ visible, onClose, attachment, apiBaseUrl }) => {
   );
 };
 
-// Styles untuk web
+
 const styles = {
   container: {
     flex: 1,

@@ -1,4 +1,4 @@
-// screens/LoginScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useRef, useState } from 'react';
@@ -31,7 +31,7 @@ export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   
-  // Animations
+  
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(50));
   const [buttonScale] = useState(new Animated.Value(1));
@@ -42,14 +42,14 @@ export default function LoginScreen({ navigation }) {
   
   const { login } = useAuth();
 
-  // Reset dan jalankan animasi saat screen muncul
+  
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      // Reset animasi values
+      
       fadeAnim.setValue(0);
       slideAnim.setValue(50);
       
-      // Jalankan animasi masuk
+      
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -66,7 +66,7 @@ export default function LoginScreen({ navigation }) {
       ]).start();
     });
 
-    // Shimmer effect untuk gradient
+    
     Animated.loop(
       Animated.sequence([
         Animated.timing(shimmerAnim, {
@@ -95,7 +95,7 @@ export default function LoginScreen({ navigation }) {
 
     setLoading(true);
     
-    // Button press animation
+    
     Animated.sequence([
       Animated.spring(buttonScale, {
         toValue: 0.92,
@@ -111,7 +111,7 @@ export default function LoginScreen({ navigation }) {
       })
     ]).start();
 
-    // Logo spin animation
+    
     Animated.timing(logoRotate, {
       toValue: 1,
       duration: 600,
@@ -157,7 +157,7 @@ export default function LoginScreen({ navigation }) {
       onPress={() => {
         setIdentifier(username);
         setPassword(password);
-        // Haptic feedback would go here
+        
       }}
       activeOpacity={0.7}
     >

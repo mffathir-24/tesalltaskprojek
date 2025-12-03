@@ -1,4 +1,4 @@
-// components/Input.js
+
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -63,7 +63,7 @@ export const Input = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           editable={!disabled}
-          // Web specific props
+          
           {...(isWeb && {
             autoComplete: secureTextEntry ? 'current-password' : 'username',
             spellCheck: false,

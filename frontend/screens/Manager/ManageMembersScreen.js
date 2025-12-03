@@ -1,4 +1,4 @@
-// screens/Manager/ManageMembersScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';

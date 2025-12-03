@@ -1,4 +1,4 @@
-// screens/Manager/ManagerTaskDetailScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -29,7 +29,7 @@ const ManagerTaskDetailScreen = ({ route, navigation }) => {
   const { user: currentUser } = useAuth();
   const { width, height } = useWindowDimensions();
   
-  // State Management
+  
   const [task, setTask] = useState(null);
   const [comments, setComments] = useState([]);
   const [attachments, setAttachments] = useState([]);
@@ -46,14 +46,14 @@ const ManagerTaskDetailScreen = ({ route, navigation }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
   
-  // Responsive Design
+  
   const isMobile = width < 768;
   const isTablet = width >= 768 && width < 1024;
   const isDesktop = width >= 1024;
   const paddingHorizontal = isMobile ? 16 : isTablet ? 24 : 32;
   const contentContainerPaddingBottom = isMobile ? 32 : 64;
 
-  // ==================== API Calls ====================
+  
   const fetchTaskData = useCallback(async () => {
     try {
       setLoading(true);
@@ -93,7 +93,7 @@ const ManagerTaskDetailScreen = ({ route, navigation }) => {
     fetchTaskData();
   }, [fetchTaskData]);
 
-  // ==================== Helper Functions ====================
+  
   const isCommentOwner = (comment) => {
     console.log('🔍 Checking comment ownership:', {
       commentUserId: comment.user_id,
@@ -185,15 +185,15 @@ const ManagerTaskDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  // Fungsi untuk menghapus komentar
+  
   const performDeleteComment = async (comment) => {
     try {
       await commentService.deleteComment(taskId, comment.id);
       await fetchTaskData();
       
-      // Tampilkan feedback sukses
+      
       if (Platform.OS === 'web') {
-        // Untuk web, gunakan toast atau custom alert
+        
         alert('Comment deleted successfully');
       } else {
         Alert.alert('Success', 'Comment deleted successfully');
@@ -216,7 +216,7 @@ const ManagerTaskDetailScreen = ({ route, navigation }) => {
     setShowPreviewModal(true);
   };
 
-  // ==================== Style & Formatting Functions ====================
+  
   const getStatusGradient = (status) => {
     switch (status?.toLowerCase()) {
       case 'todo':
@@ -294,7 +294,7 @@ const ManagerTaskDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  // ==================== Render Functions ====================
+  
   const renderCommentItem = ({ item, index }) => {
     const isOwner = isCommentOwner(item);
     
@@ -612,7 +612,7 @@ const ManagerTaskDetailScreen = ({ route, navigation }) => {
     </Animated.View>
   );
 
-  // ==================== Tab Content Renderers ====================
+  
   const renderDetailsTab = () => (
     <ScrollView 
       showsVerticalScrollIndicator={false}
@@ -1126,7 +1126,7 @@ const ManagerTaskDetailScreen = ({ route, navigation }) => {
     </View>
   );
 
-  // ==================== Loading State ====================
+  
   if (loading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc' }}>
@@ -1165,7 +1165,7 @@ const ManagerTaskDetailScreen = ({ route, navigation }) => {
     );
   }
 
-  // ==================== Error State ====================
+  
   if (!task) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc', justifyContent: 'center', alignItems: 'center', paddingHorizontal: paddingHorizontal }}>
@@ -1207,7 +1207,7 @@ const ManagerTaskDetailScreen = ({ route, navigation }) => {
     );
   }
 
-  // ==================== Main Render ====================
+  
   const ScrollComponent = Platform.OS === 'web' ? ScrollView : SafeAreaView;
   const scrollProps = Platform.OS === 'web' ? {
     scrollEnabled: true,

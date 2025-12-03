@@ -1,4 +1,4 @@
-// screens/Admin/AdminTaskDetailScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -29,7 +29,7 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
   const { user: currentUser } = useAuth();
   const { width, height } = useWindowDimensions();
   
-  // State Management
+  
   const [task, setTask] = useState(null);
   const [comments, setComments] = useState([]);
   const [attachments, setAttachments] = useState([]);
@@ -47,14 +47,14 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [deletingComment, setDeletingComment] = useState(false);
   
-  // Responsive Design
+  
   const isMobile = width < 768;
   const isTablet = width >= 768 && width < 1024;
   const isDesktop = width >= 1024;
   const paddingHorizontal = isMobile ? 16 : isTablet ? 24 : 32;
   const contentContainerPaddingBottom = isMobile ? 32 : 64;
 
-  // ==================== API Calls ====================
+  
   const fetchTaskData = useCallback(async () => {
     try {
       setLoading(true);
@@ -90,7 +90,7 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
     fetchTaskData();
   }, [fetchTaskData]);
 
-  // ==================== Helper Functions ====================
+  
   const isCommentOwner = (comment) => {
     return comment.user_id === currentUser?.id;
   };
@@ -157,12 +157,12 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
       return;
     }
 
-    // Untuk web, gunakan custom modal
+    
     if (Platform.OS === 'web') {
       setCommentToDelete(comment);
       setShowDeleteCommentModal(true);
     } else {
-      // Untuk mobile, gunakan Alert native
+      
       Alert.alert(
         'Delete Comment',
         'Are you sure you want to delete this comment?',
@@ -180,16 +180,16 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  // Fungsi untuk menghapus comment
+  
   const performDeleteComment = async (comment) => {
     try {
       setDeletingComment(true);
       await commentService.deleteComment(taskId, comment.id);
       
-      // Refresh data
+      
       await fetchTaskData();
       
-      // Tampilkan feedback sukses
+      
       if (Platform.OS === 'web') {
         alert('Comment deleted successfully');
       } else {
@@ -211,7 +211,12 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  // ==================== Style & Formatting Functions ====================
+  const handleOpenPreview = (attachment) => {
+    setSelectedAttachment(attachment);
+    setShowPreviewModal(true);
+  };
+
+  
   const getStatusGradient = (status) => {
     switch (status?.toLowerCase()) {
       case 'todo':
@@ -289,7 +294,7 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  // ==================== Render Functions ====================
+  
   const renderCommentItem = ({ item, index }) => {
     const isOwner = isCommentOwner(item);
     
@@ -672,7 +677,7 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
     </Animated.View>
   );
 
-  // ==================== Tab Content Renderers ====================
+  
   const renderDetailsTab = () => (
     <ScrollView 
       showsVerticalScrollIndicator={false}
@@ -1185,7 +1190,7 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
     </View>
   );
 
-  // ==================== Loading State ====================
+  
   if (loading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc' }}>
@@ -1224,7 +1229,7 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
     );
   }
 
-  // ==================== Error State ====================
+  
   if (!task) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc', justifyContent: 'center', alignItems: 'center', paddingHorizontal: paddingHorizontal }}>
@@ -1266,7 +1271,7 @@ const AdminTaskDetailScreen = ({ route, navigation }) => {
     );
   }
 
-  // ==================== Main Render ====================
+  
   const ScrollComponent = Platform.OS === 'web' ? ScrollView : SafeAreaView;
   const scrollProps = Platform.OS === 'web' ? {
     scrollEnabled: true,

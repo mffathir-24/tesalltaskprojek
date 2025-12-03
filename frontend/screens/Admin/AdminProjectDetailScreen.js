@@ -1,4 +1,4 @@
-// screens/Admin/AdminProjectDetailScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
@@ -448,7 +448,7 @@ const AdminProjectDetailScreen = ({ route, navigation }) => {
             <TouchableOpacity 
               className="p-2 rounded-full bg-gray-100 active:bg-gray-200"
               onPress={() => {
-                // Handle member action
+                
               }}
             >
               <Ionicons name="ellipsis-horizontal" size={16} color="#6b7280" />
@@ -567,7 +567,7 @@ const AdminProjectDetailScreen = ({ route, navigation }) => {
       className="flex-1 bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50"
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
-      // Untuk web, tambahkan style ini
+      
       style={{ 
         height: '100vh',
         overflow: 'scroll',
@@ -669,7 +669,7 @@ const AdminProjectDetailScreen = ({ route, navigation }) => {
         style={{
           opacity: fadeAnim,
           transform: [{ translateY: slideAnim }],
-          minHeight: 400 // Pastikan ada height minimum untuk web
+          minHeight: 400 
         }}
       >
         {/* Tab Navigation */}
@@ -723,7 +723,7 @@ const AdminProjectDetailScreen = ({ route, navigation }) => {
                 data={filteredMembers}
                 renderItem={renderMemberItem}
                 keyExtractor={(item) => item.id?.toString()}
-                scrollEnabled={false} // Nonaktifkan scroll internal untuk web
+                scrollEnabled={false} 
                 contentContainerStyle={{ 
                   padding: 16,
                   paddingBottom: 40
@@ -769,7 +769,7 @@ const AdminProjectDetailScreen = ({ route, navigation }) => {
                       <TouchableOpacity 
                         className="bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl px-8 py-4 mt-8 shadow-lg active:scale-95"
                         onPress={() => {
-                          // Handle add member
+                          
                         }}
                       >
                         <Text className="text-white text-base font-bold">Add Team Member</Text>
@@ -788,7 +788,7 @@ const AdminProjectDetailScreen = ({ route, navigation }) => {
                 data={filteredTasks}
                 renderItem={renderTaskItem}
                 keyExtractor={(item) => item.id?.toString()}
-                scrollEnabled={false} // Nonaktifkan scroll internal untuk web
+                scrollEnabled={false} 
                 contentContainerStyle={{ 
                   padding: 16,
                   paddingBottom: 40
@@ -834,7 +834,7 @@ const AdminProjectDetailScreen = ({ route, navigation }) => {
                       <TouchableOpacity 
                         className="bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl px-8 py-4 mt-8 shadow-lg active:scale-95"
                         onPress={() => {
-                          // Handle add task
+                          
                         }}
                       >
                         <Text className="text-white text-base font-bold">Create First Task</Text>

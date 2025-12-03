@@ -1,4 +1,4 @@
-// screens/Manager/ManagerProjectsScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
@@ -27,13 +27,13 @@ const ManagerProjectsScreen = ({ navigation }) => {
   const { user } = useAuth();
   const { width, height } = useWindowDimensions();
   
-  // Hitung layout secara dinamis
+  
   const isTablet = width >= 768;
   const NUM_COLUMNS = isTablet ? 3 : 1;
   const CARD_MARGIN = 12;
   const CARD_WIDTH = (width - (CARD_MARGIN * (NUM_COLUMNS + 1))) / NUM_COLUMNS;
   
-  // State
+  
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const ManagerProjectsScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   
-  // Animations
+  
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
   const headerAnim = useRef(new Animated.Value(0)).current;
@@ -228,7 +228,7 @@ const ManagerProjectsScreen = ({ navigation }) => {
     return value !== undefined ? value : fallback;
   };
 
-  // Komponen FilterButton
+  
   const FilterButton = ({ label, value, icon }) => {
     const isSelected = selectedFilter === value;
     const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -276,7 +276,7 @@ const ManagerProjectsScreen = ({ navigation }) => {
     );
   };
 
-  // Komponen ProjectCard dengan layout dinamis
+  
   const ProjectCard = ({ project, index }) => {
     const cardScale = useRef(new Animated.Value(1)).current;
     
@@ -300,7 +300,7 @@ const ManagerProjectsScreen = ({ navigation }) => {
       }).start();
     };
 
-    // Style dinamis berdasarkan lebar card
+    
     const dynamicStyles = StyleSheet.create({
       cardContainer: {
         width: CARD_WIDTH,
@@ -484,7 +484,7 @@ const ManagerProjectsScreen = ({ navigation }) => {
     );
   };
 
-  // Komponen LoadingSkeleton
+  
   const LoadingSkeleton = () => (
     <View style={styles.loadingContainer}>
       <LinearGradient
@@ -502,7 +502,7 @@ const ManagerProjectsScreen = ({ navigation }) => {
     </View>
   );
 
-  // Komponen EmptyState
+  
   const EmptyState = () => (
     <View style={styles.emptyContainer}>
       <LinearGradient
@@ -631,8 +631,8 @@ const ManagerProjectsScreen = ({ navigation }) => {
           styles.gridContent,
           { 
             padding: CARD_MARGIN,
-            paddingBottom: 100, // Memberikan ruang untuk FAB
-            flexGrow: 1 // FIX: Ini yang memperbaiki scroll
+            paddingBottom: 100, 
+            flexGrow: 1 
           }
         ]}
         refreshControl={
@@ -664,18 +664,18 @@ const ManagerProjectsScreen = ({ navigation }) => {
         maxToRenderPerBatch={10}
         windowSize={5}
         initialNumToRender={10}
-        // Fix untuk scroll yang mentok
+        
         onContentSizeChange={(width, height) => {
           console.log('Content size:', width, height);
         }}
         onLayout={(event) => {
           console.log('FlatList layout:', event.nativeEvent.layout);
         }}
-        // Menggunakan ListHeaderComponentStyle untuk mengatur posisi header
+        
         ListHeaderComponentStyle={{
           paddingTop: 10,
         }}
-        // Menggunakan ItemSeparatorComponent untuk memberikan jarak
+        
         ItemSeparatorComponent={() => <View style={{ height: CARD_MARGIN }} />}
       />
 
@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f8fafc',
   },
-  // Header Styles
+  
   header: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -755,7 +755,7 @@ const styles = StyleSheet.create({
     color: '#e0f2fe',
     fontWeight: '600',
   },
-  // Search Styles
+  
   searchContainer: {
     paddingHorizontal: 20,
     marginBottom: 16,
@@ -791,7 +791,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // Filter Styles
+  
   filterScroll: {
     paddingHorizontal: 20,
   },
@@ -826,10 +826,10 @@ const styles = StyleSheet.create({
   filterButtonTextInactive: {
     color: '#ffffff',
   },
-  // Grid Styles - FIXED
+  
   gridContent: {
-    flexGrow: 1, // INI PENTING: Membuat konten bisa scroll
-    paddingBottom: 100, // Memberi ruang untuk FAB
+    flexGrow: 1, 
+    paddingBottom: 100, 
   },
   listHeader: {
     paddingVertical: 12,
@@ -857,7 +857,7 @@ const styles = StyleSheet.create({
     borderColor: '#f1f5f9',
     height: '100%',
   },
-  // Card Header
+  
   cardHeader: {
     padding: 16,
   },
@@ -896,7 +896,7 @@ const styles = StyleSheet.create({
     color: '#e0f2fe',
     marginLeft: 4,
   },
-  // Progress Bar
+  
   progressContainer: {
     marginTop: 8,
   },
@@ -926,13 +926,13 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 3,
   },
-  // Card Body
+  
   cardBody: {
     padding: 16,
     flex: 1,
     justifyContent: 'space-between',
   },
-  // Stats Grid
+  
   statsGrid: {
     flexDirection: 'row',
     backgroundColor: '#f8fafc',
@@ -951,7 +951,7 @@ const styles = StyleSheet.create({
   statItemLast: {
     alignItems: 'flex-end',
   },
-  // Action Buttons
+  
   actionButtons: {
     flexDirection: 'row',
     gap: 8,
@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
   viewButton: {
     backgroundColor: '#10b981',
   },
-  // Loading Styles
+  
   loadingContainer: {
     flex: 1,
   },
@@ -1009,7 +1009,7 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     textAlign: 'center',
   },
-  // Empty State Styles
+  
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
@@ -1066,7 +1066,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 8,
   },
-  // FAB Styles
+  
   fab: {
     position: 'absolute',
     right: 24,

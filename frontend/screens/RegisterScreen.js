@@ -1,4 +1,4 @@
-// screens/RegisterScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useRef, useState } from 'react';
@@ -32,7 +32,7 @@ export default function RegisterScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   
-  // Animations
+  
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(50));
   const [buttonScale] = useState(new Animated.Value(1));
@@ -45,7 +45,7 @@ export default function RegisterScreen({ navigation }) {
   const { register } = useAuth();
 
   React.useEffect(() => {
-    // Entry animations
+    
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -62,7 +62,7 @@ export default function RegisterScreen({ navigation }) {
     ]).start();
   }, []);
 
-  // Calculate password strength
+  
   const calculatePasswordStrength = () => {
     if (!password) return 0;
     let strength = 0;
@@ -99,7 +99,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   const handleRegister = async () => {
-    // Validation
+    
     if (!username || !email || !password || !confirmPassword) {
       Alert.alert('⚠️ Missing Information', 'Please fill in all fields to continue');
       return;
@@ -122,7 +122,7 @@ export default function RegisterScreen({ navigation }) {
 
     setLoading(true);
     
-    // Button press animation
+    
     Animated.sequence([
       Animated.spring(buttonScale, {
         toValue: 0.92,

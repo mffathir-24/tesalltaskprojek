@@ -1,4 +1,4 @@
-// screens/Manager/CreateTaskScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -184,7 +184,7 @@ export const CreateTaskScreen = ({ route, navigation }) => {
             <Text style={styles.label}>Due Date</Text>
             
             {Platform.OS === 'web' ? (
-              // Input date native untuk web
+              
               <View style={styles.webDateContainer}>
                 <View style={styles.inputContainer}>
                   <Ionicons name="calendar-outline" size={20} color="#4facfe" style={styles.inputIcon} />
@@ -203,7 +203,7 @@ export const CreateTaskScreen = ({ route, navigation }) => {
                       fontFamily: 'inherit',
                       minHeight: 24,
                     }}
-                    min={new Date().toISOString().split('T')[0]} // Set min date to today
+                    min={new Date().toISOString().split('T')[0]} 
                   />
                   {dueDate && (
                     <TouchableOpacity onPress={clearDueDate} style={{ marginLeft: 12 }}>
@@ -218,7 +218,7 @@ export const CreateTaskScreen = ({ route, navigation }) => {
                 )}
               </View>
             ) : (
-              // DateTimePicker untuk mobile
+              
               <>
                 <TouchableOpacity
                   style={styles.selectButton}
@@ -241,7 +241,7 @@ export const CreateTaskScreen = ({ route, navigation }) => {
                     mode="date"
                     display="default"
                     onChange={handleDateChange}
-                    minimumDate={new Date()} // Set min date to today
+                    minimumDate={new Date()} 
                   />
                 )}
               </>

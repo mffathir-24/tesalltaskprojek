@@ -1,4 +1,4 @@
-// screens/Admin/AdminProjectsScreen.js
+
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
@@ -25,13 +25,13 @@ import { projectService, taskService } from '../../services/api';
 const AdminProjectsScreen = ({ navigation }) => {
   const { width, height } = useWindowDimensions();
   
-  // Hitung layout secara dinamis
+  
   const isTablet = width >= 768;
   const NUM_COLUMNS = isTablet ? 3 : 1;
   const CARD_MARGIN = 12;
   const CARD_WIDTH = (width - (CARD_MARGIN * (NUM_COLUMNS + 1))) / NUM_COLUMNS;
   
-  // State
+  
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +42,7 @@ const AdminProjectsScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
   
-  // Animations
+  
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
   const headerAnim = useRef(new Animated.Value(0)).current;
@@ -78,7 +78,7 @@ const AdminProjectsScreen = ({ navigation }) => {
     filterProjects();
   }, [searchQuery, projects, selectedFilter]);
 
-  // Fungsi-fungsi lainnya tetap sama...
+  
   const calculateProjectProgress = (tasks) => {
     if (!tasks || tasks.length === 0) return 0;
     
@@ -228,7 +228,7 @@ const AdminProjectsScreen = ({ navigation }) => {
     return value !== undefined ? value : fallback;
   };
 
-  // Komponen FilterButton
+  
   const FilterButton = ({ label, value, icon }) => {
     const isSelected = selectedFilter === value;
     const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -276,7 +276,7 @@ const AdminProjectsScreen = ({ navigation }) => {
     );
   };
 
-  // Komponen ProjectCard dengan layout dinamis
+  
   const ProjectCard = ({ project, index }) => {
     const cardScale = useRef(new Animated.Value(1)).current;
     const rotateAnim = useRef(new Animated.Value(0)).current;
@@ -321,7 +321,7 @@ const AdminProjectsScreen = ({ navigation }) => {
       outputRange: ['0deg', '2deg']
     });
 
-    // Style dinamis berdasarkan lebar card
+    
     const dynamicStyles = StyleSheet.create({
       cardContainer: {
         width: CARD_WIDTH,
@@ -516,7 +516,7 @@ const AdminProjectsScreen = ({ navigation }) => {
     );
   };
 
-  // Komponen EmptyState dan Loading tetap sama...
+  
   const LoadingSkeleton = () => (
     <View style={styles.loadingContainer}>
       <LinearGradient
@@ -661,7 +661,7 @@ const AdminProjectsScreen = ({ navigation }) => {
         data={filteredProjects}
         renderItem={({ item, index }) => <ProjectCard project={item} index={index} />}
         keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
-        numColumns={NUM_COLUMNS} // Otomatis 3 atau 1
+        numColumns={NUM_COLUMNS} 
         contentContainerStyle={[
           styles.gridContent,
           { padding: CARD_MARGIN }
@@ -686,7 +686,7 @@ const AdminProjectsScreen = ({ navigation }) => {
           </View>
         }
         ListEmptyComponent={<EmptyState />}
-        // Key akan otomatis berubah saat NUM_COLUMNS berubah
+        
         key={`grid-${NUM_COLUMNS}`}
         removeClippedSubviews={true}
         maxToRenderPerBatch={10}
@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f8fafc',
   },
-  // Header Styles
+  
   header: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -751,7 +751,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  // Search Styles
+  
   searchContainer: {
     paddingHorizontal: 20,
     marginBottom: 16,
@@ -776,9 +776,9 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 16,
     color: '#334155',
-    // Tambahkan ini untuk menghilangkan outline di web
+    
     outlineStyle: 'none',
-    // Alternatif jika outlineStyle tidak bekerja
+    
     outlineWidth: 0,
   },
   clearButton: {
@@ -789,7 +789,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // Filter Styles
+  
   filterScroll: {
     paddingHorizontal: 20,
   },
@@ -824,7 +824,7 @@ const styles = StyleSheet.create({
   filterButtonTextInactive: {
     color: '#ffffff',
   },
-  // Grid Styles
+  
   gridContent: {
     paddingBottom: 100,
   },
@@ -850,7 +850,7 @@ const styles = StyleSheet.create({
     borderColor: '#f1f5f9',
     height: '100%',
   },
-  // Card Header
+  
   cardHeader: {
     padding: 16,
   },
@@ -895,7 +895,7 @@ const styles = StyleSheet.create({
     color: '#e9d5ff',
     marginLeft: 4,
   },
-  // Progress Bar
+  
   progressContainer: {
     marginTop: 8,
   },
@@ -925,12 +925,12 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 3,
   },
-  // Card Body
+  
   cardBody: {
     padding: 16,
     flex: 1,
   },
-  // Stats Grid
+  
   statsGrid: {
     flexDirection: 'row',
     backgroundColor: '#f8fafc',
@@ -949,7 +949,7 @@ const styles = StyleSheet.create({
   statItemLast: {
     alignItems: 'flex-end',
   },
-  // Manager Info
+  
   managerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginBottom: 2,
   },
-  // Deadline
+  
   deadlineContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -986,7 +986,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     fontWeight: '500',
   },
-  // Card Footer
+  
   cardFooter: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1013,7 +1013,7 @@ const styles = StyleSheet.create({
   footerTextCompleted: {
     color: '#059669',
   },
-  // Loading Styles
+  
   loadingContainer: {
     flex: 1,
   },
@@ -1047,7 +1047,7 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     textAlign: 'center',
   },
-  // Empty State Styles
+  
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
@@ -1104,7 +1104,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 8,
   },
-  // FAB Styles
+  
   fab: {
     position: 'absolute',
     right: 24,
